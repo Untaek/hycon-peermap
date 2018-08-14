@@ -28,6 +28,7 @@
     "morgan": "^1.9.0",
     "nodemon": "^1.18.3",
     "protobufjs": "^6.8.8",
+    "redux-devtools": "^3.4.1",
     "source-map-loader": "^0.2.3",
     "tsconfig": "^7.0.0",
     "tslint": "^5.11.0",
@@ -51,8 +52,10 @@
     "react-dom": "^16.4.2",
     "react-ga": "^2.5.3",
     "react-leaflet": "^2.0.0",
+    "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "redux": "^4.0.0",
     "vis": "^4.21.0"
   }
 }

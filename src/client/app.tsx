@@ -1,303 +1,35 @@
-import { Button, Card, CardContent, Divider, GridList, GridListTile, List, ListItem, ListItemText, ListSubheader, Radio, Typography } from '@material-ui/core'
+import { CircularProgress, Typography } from '@material-ui/core'
 import * as React from 'react'
-import * as ReactDom from 'react-dom'
-import { Map as MAAP, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
 import { Route, Switch } from 'react-router-dom'
-import * as vis from 'vis'
 import { IPeerInfo } from '../ipeerInfo'
-import { IPeer } from '../serialization/proto'
 import { ChartView } from './category/chartview'
 import { MapView } from './category/mapview'
-import { Chart } from './chart'
 import { Footer } from './layout/footer'
 import { Header } from './layout/header'
-import { PeerDetail } from './peerDetail'
-import { flag } from './util'
 
 interface IState {
-  detail: IPeerInfo
   details: Map<string, IPeerInfo>
-  edges: vis.DataSet<vis.Edge>
-  nodes: vis.DataSet<vis.Node>
-  network: vis.Network
-  category: string
 }
 
 export class App extends React.Component<any, IState> {
-  private display: HTMLDivElement
-  private buttons: string[] = [
-    'circle', 'scatter', /*"location",*/ 'version',
-  ]
 
   constructor(props: any) {
     super(props)
     this.state = {
-      category: 'scatter',
-      detail: undefined,
       details: undefined,
-      edges: undefined,
-      network: undefined,
-      nodes: undefined,
     }
   }
 
   public async componentDidMount() {
+
     fetch('http://localhost:5885/map').then((res) => res.json()).then((json) => {
       const detailsObject = json.data.details
 
       const details = new Map<string, IPeerInfo>()
       for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
 
-      const edges = this.generateEdges(details)
-      const nodes = this.generateNodes(details)
-      const network = this.generateNetwork(nodes, edges, this.display)
-
-      this.setState({ details, edges, nodes, network })
-
-      network.on('click', (info: any) => {
-        const key = info.nodes[0]
-        const detail = details.get(key)
-        this.setState({ detail })
-      })
+      this.setState({ details })
     })
-  }
-
-  public buttonHandler(category: string) {
-    this.setState({ category })
-    this.changeCategory(category)
-  }
-
-  public changeCategory(type: string) {
-    let theta = 360 / this.state.details.size
-    let r = 1200
-    let i = 0
-    if (this.state.network === undefined) {
-      this.setState({ network: this.generateNetwork(this.state.nodes, this.state.edges, this.display) })
-    }
-    switch (type) {
-      case 'circle':
-        this.state.nodes.forEach((node) => {
-          node.x = r * Math.cos(theta * i * Math.PI / 180)
-          node.y = r * Math.sin(theta * i * Math.PI / 180)
-          i++
-          this.state.nodes.update(node)
-        })
-        this.state.network.setOptions({
-          physics: { enabled: false },
-        })
-
-        break
-      case 'scatter':
-        this.state.nodes.forEach((node) => {
-          node.x = Math.random() * 1000
-          node.y = Math.random() * 100
-          this.state.nodes.update(node)
-        })
-        this.state.network.setOptions({
-          physics: {
-            barnesHut: {
-              gravitationalConstant: -20000,
-              springConstant: 0,
-              springLength: 1000,
-            },
-            enabled: true,
-          },
-        })
-        break
-      // case "location":
-      //   this.state.network.destroy()
-      //   this.setState({ network: undefined })
-
-      //   break
-      case 'version':
-        theta = 360 / 8
-        r = 1600
-        this.state.nodes.forEach((node) => {
-          const version = this.state.details.get(node.id.toString()).status.version
-          node.x = r * Math.cos(theta * version * Math.PI / 180)
-          node.y = r * Math.sin(theta * version * Math.PI / 180)
-          i++
-          this.state.nodes.update(node)
-        })
-        this.state.network.setOptions({
-          physics: {
-            barnesHut: {
-              gravitationalConstant: -20000,
-              springConstant: 0,
-              springLength: 1000,
-            },
-            enabled: true,
-          },
-        })
-        break
-    }
-  }
-
-  public generateNodes(details: Map<string, IPeerInfo>): vis.DataSet<vis.Node> {
-    const nodes: any = []
-
-    details.forEach((detail, key) => {
-      const shortGuidWithEmoji = `${detail.location ? flag(detail.location.country) : ''}${detail.status.guid.slice(0, 5)}`
-      const version = detail.status.version
-      const node: any = { id: key, label: shortGuidWithEmoji }
-
-      let size = 0
-      for (const peer of details.values()) {
-        if (peer.connected.find((val) => `${val.host}:${val.port}` === key)) {
-          size++
-        }
-      }
-
-      node.size = size * 2 + 25
-
-      if (version === 5) {
-        node.color = 'pink'
-      } else if (version === 7) {
-        node.color = 'salmon'
-      } else if (version === 8) {
-        node.color = 'green'
-      } else if (version === 9) {
-        node.color = 'tomato'
-      }
-
-      nodes.push(node)
-    })
-    return new vis.DataSet(nodes)
-  }
-
-  public generateEdges(details: Map<string, IPeerInfo>): vis.DataSet<vis.Edge> {
-    const edges: any[] = []
-
-    details.forEach((detail, key) => {
-      Array.prototype.push.apply(edges,
-        detail.connected.map((connection: IPeer, i: number) => {
-          const edge: any = { from: key, to: `${connection.host}:${connection.port}` }
-          if (details
-            .get(`${connection.host}:${connection.port}`)
-            .connected
-            .find((peer) => `${peer.host}:${peer.port}` === key)
-          ) {
-            edge.color = { color: 'blue' }
-          } else {
-            edge.color = { color: 'grey' }
-          }
-          if (edge.from === '::ffff:118.40.192.72:8148' || edge.from === '118.40.192.72:8148') {
-            edge.hidden = true
-          }
-
-          return edge
-        }),
-      )
-    })
-
-    return new vis.DataSet(edges)
-  }
-
-  public generateNetwork(nodes: vis.DataSet<vis.Node>, edges: vis.DataSet<vis.Edge>, display: HTMLElement): vis.Network {
-    const network = new vis.Network(
-      display,
-      { edges, nodes },
-      {
-        autoResize: true,
-        clickToUse: true,
-        edges: {
-          arrows: { to: { enabled: true } },
-          smooth: false,
-        },
-        height: '700',
-        layout: {
-          improvedLayout: true,
-        },
-        manipulation: {
-          enabled: true,
-        },
-        nodes: {
-          shape: 'circle',
-        },
-        physics: {
-
-          barnesHut: {
-            gravitationalConstant: -20000,
-            springConstant: 0,
-            springLength: 1000,
-          },
-          enabled: true,
-        },
-      },
-    )
-
-    return network
-  }
-
-  public showDetail() {
-    const detail = this.state.detail
-
-    if (detail === undefined) {
-      return ''
-    }
-    return (
-      <div style={{ padding: 16 }}>
-        <p>{`Host: ${detail.host}`}</p>
-        <p>{`Port: ${detail.port}`}</p>
-        <p>{`GUID: ${detail.status.guid}`}</p>
-        <p>{`Version: ${detail.status.version}`}</p>
-        <p>Location: {detail.location ?
-          `${detail.location.city}, ${detail.location.country}, ${detail.location.region} ${flag(detail.location.country)}`
-          : 'Unknown (Maybe local network)'
-        }
-        </p>
-        <h3>== Connection list == </h3>
-        {detail.connected.map((peer: any) => <p>{`${peer.host}:${peer.port}`}</p>)}
-      </div>
-    )
-  }
-
-  public createMarkers() {
-    if (this.state.details) {
-      const markers = []
-      for (const peer of this.state.details.values()) {
-        if (peer.location) {
-          markers.push(
-            <Marker
-              position={{ lat: peer.location.ll[0], lng: peer.location.ll[1] }}
-              onClick={(e: any) => {
-                const x = this.state.nodes.get(`${peer.host}:${peer.port}`).x
-                const y = this.state.nodes.get(`${peer.host}:${peer.port}`).y
-                this.setState({ detail: peer })
-                this.state.network.selectNodes([`${peer.host}:${peer.port}`])
-                this.state.network.focus(`${peer.host}:${peer.port}`, { animation: true })
-              }}
-            >
-              <Popup>{`${peer.host}:${peer.port}`}</Popup>
-            </Marker>,
-          )
-        }
-      }
-      return markers
-    }
-  }
-
-  public createPolylines() {
-    const lats: any[] = []
-    const lngs: any[] = []
-    const latlngs: any[] = []
-    if (this.state.details) {
-      const details = this.state.details
-      details.forEach((val) => {
-        if (val.location) {
-          latlngs.push([val.location.ll[0], val.location.ll[1]])
-          val.connected.forEach((peer) => {
-            const key = `${peer.host}:${peer.port}`
-            const to = details.get(key).location
-            if (to) {
-              latlngs.push([to.ll[0], to.ll[1]])
-            }
-          })
-        }
-      })
-    }
-
-    return <Polyline color='blue' weight={0.4} positions={latlngs} />
   }
 
   public render() {
@@ -305,72 +37,17 @@ export class App extends React.Component<any, IState> {
     return (
       <div>
         <Header />
-        <Switch>
-          <Route exact path='/' render={(props) => <MapView {...props} details={details} />} />
-          <Route exact path='/chart' component={ChartView} />
-        </Switch>
-        <div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ borderRight: '1px solid #b3e0ff' }}>
-              <List component='nav' subheader={<ListSubheader disableSticky component='div' >Category</ListSubheader>}>
-                <Divider />
-                {
-                  this.buttons.map((name) => (
-                    <ListItem divider button onClick={(e) => this.buttonHandler(name)}>
-                      <ListItemText primary={name} />
-                    </ListItem>
-                  ))
-                }
-              </List>
-            </div>
-            <div style={{ position: 'absolute', left: 140 }}>
-              {
-                details ? <PeerDetail detail={this.state.detail} peerSize={this.state.details.size} /> : ''
-              }
-            </div>
-            <div ref={(c) => this.display = c} style={{ flex: 1 }} />
-            <div style={{ height: 700, flex: 1 }}>
-              <MAAP style={{ height: '100%', width: '100%', flex: 1 }} center={{ lat: 1, lng: 1 }} zoom={2}>
-                <TileLayer
-                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                  attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-                />
-                {this.createMarkers()}
-                {this.createPolylines()}
-              </MAAP>
-            </div>
-
+        {details ?
+          <Switch>
+            <Route exact path='/' render={(props) => <MapView {...props} details={details} />} />
+            <Route exact path='/chart' render={(props) => <ChartView {...props} details={details} />} />
+          </Switch>
+          :
+          <div style={{ height: 500, display: 'flex' }}>
+            <CircularProgress />
+            <Typography>Now loading...</Typography>
           </div>
-          <div style={{ backgroundColor: '#b3e0ff' }}>
-            {
-              details ?
-                <GridList cellHeight='auto'>
-                  <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }}>
-                    <ListSubheader component='div'>Charts</ListSubheader>
-                  </GridListTile>
-                  <GridListTile key='versions'>
-                    <Card style={{ margin: 16 }}>
-                      <CardContent>
-                        <Typography component='h2' variant='headline' style={{ borderBottom: '1px solid #aaaaaa' }}>Versions</Typography>
-                        <Chart mode={Chart.PEER_VERSION} details={this.state.details} />
-
-                      </CardContent>
-                    </Card>
-                  </GridListTile>
-                  <GridListTile key='countries'>
-                    <Card style={{ margin: 16 }}>
-                      <CardContent>
-                        <Typography component='h2' variant='headline' style={{ borderBottom: '1px solid #aaaaaa' }}>Countries</Typography>
-                        <Chart mode={Chart.PEER_COUNTRY} details={this.state.details} />
-                      </CardContent>
-                    </Card>
-                  </GridListTile>
-                </GridList>
-
-                : undefined
-            }
-          </div>
-        </div >
+        }
         <Footer />
       </div >
     )
