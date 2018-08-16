@@ -12,7 +12,8 @@ const logger = getLogger('Server')
 // tslint:disable no-console
 export class Server {
   private app: Express.Application
-  private hyconAdr = 'localhost:5885'
+  private hyconPeerMapAdr = 'http://localhost:5885'
+  private hyconRestServerAdr = 'http://localhost:2442'
   private config = {
     host: 'localhost',
     port: 8888,
@@ -41,8 +42,14 @@ export class Server {
   private router() {
     const router = Express.Router()
 
-    router.get('/map', (req, res) => {
-      axios.get(`http://localhost:5885/map`).then((resp) => res.json(resp.data))
+    router.get('/map', async (req, res) => {
+      const response = await axios.get(`${this.hyconPeerMapAdr}/map`)
+      res.json(response.data)
+    })
+
+    router.get('/status', async (req, res) => {
+      const response = await axios.get(`${this.hyconPeerMapAdr}/status`)
+      res.json(response.data)
     })
 
     router.get('*', (req, res) => {

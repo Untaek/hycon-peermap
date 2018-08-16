@@ -22,14 +22,26 @@ export class App extends React.Component<any, IState> {
   }
 
   public async componentDidMount() {
-    fetch('/map').then((res) => res.json()).then((json) => {
-      const detailsObject = json.data.details
+    if (process.env.NODE_ENV === 'development') {
+      fetch('http://localhost:5885/map').then((res) => res.json()).then((json) => {
+        const detailsObject = json.data.details
 
-      const details = new Map<string, IPeerInfo>()
-      for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
+        const details = new Map<string, IPeerInfo>()
+        for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
 
-      this.setState({ details })
-    })
+        this.setState({ details })
+      })
+    } else {
+      fetch('/map').then((res) => res.json()).then((json) => {
+        const detailsObject = json.data.details
+
+        const details = new Map<string, IPeerInfo>()
+        for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
+
+        this.setState({ details })
+      })
+    }
+
   }
 
   public render() {
