@@ -26,7 +26,7 @@ export class Server {
 
   private init() {
     this.app = Express()
-    this.app.use(Express.static(path.resolve(__dirname, 'client/dist')))
+    this.app.use(Express.static(path.resolve(__dirname, '../dist')))
     this.app.use(bodyParser.json())
     this.app.use(morgan('dev'))
     this.app.use(helmet())
@@ -38,7 +38,7 @@ export class Server {
     const router = Express.Router()
 
     router.get('/', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist/index.html'))
+      res.sendFile(path.resolve(__dirname, '../dist/index.html'))
     })
     return router
   }
