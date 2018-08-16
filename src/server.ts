@@ -1,3 +1,4 @@
+import axios from 'axios'
 import bodyParser = require('body-parser')
 import * as Express from 'express'
 import helmet = require('helmet')
@@ -41,8 +42,7 @@ export class Server {
     const router = Express.Router()
 
     router.get('/map', (req, res) => {
-      fetch(`${this.hyconAdr}/map`).then((resp) => resp.json())
-        .then((json) => res.json(json))
+      axios.get(`http://localhost:5885/map`).then((resp) => res.json(resp.data))
     })
 
     router.get('*', (req, res) => {
