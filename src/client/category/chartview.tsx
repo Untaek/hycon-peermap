@@ -1,7 +1,7 @@
+import { Card, CardContent, GridList, GridListTile, ListSubheader, Typography } from '@material-ui/core'
 import * as React from 'react'
-import { GridList, GridListTile, ListSubheader, Card, CardContent, Typography } from '@material-ui/core'
+import { IPeerInfo } from '../../ipeerInfo'
 import { Chart } from '../chart'
-import { IPeerInfo } from '../../ipeerInfo';
 
 interface IProps {
   details: Map<string, IPeerInfo>
@@ -15,16 +15,13 @@ export class ChartView extends React.Component<IProps, IState> {
   constructor(props) {
     super(props)
     this.state = {
-      details: this.props.details
+      details: this.props.details,
     }
   }
   public render() {
     return (
       <div>
         <GridList cellHeight='auto'>
-          {/* <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }}>
-            <ListSubheader component='div'>Charts</ListSubheader>
-          </GridListTile> */}
           <GridListTile key='versions'>
             <Card style={{ margin: 16 }}>
               <CardContent>

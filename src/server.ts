@@ -20,7 +20,7 @@ export class Server {
 
   public start() {
     this.app.listen(this.config.port, () => {
-      console.log('Server is running... ' + '')
+      logger.info('Server is running... ' + '')
     })
   }
 

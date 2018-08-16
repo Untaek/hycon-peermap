@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { AppBar, IconButton, Tab, Tabs, Toolbar, Typography } from '@material-ui/core'
 import * as Icon from '@material-ui/icons'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 interface IState {
   tab: number
@@ -13,11 +13,8 @@ export class Header extends React.Component<any, IState> {
   constructor(props) {
     super(props)
     this.state = {
-      tab: 0
+      tab: 0,
     }
-  }
-  private handleTabChange(index) {
-    this.setState({ tab: index })
   }
 
   public render() {
@@ -39,5 +36,8 @@ export class Header extends React.Component<any, IState> {
         </Tabs>
       </AppBar>
     )
+  }
+  private handleTabChange(index) {
+    this.setState({ tab: index })
   }
 }
