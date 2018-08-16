@@ -2,10 +2,7 @@ import { Card, CardContent, GridList, GridListTile, ListSubheader, Typography } 
 import * as React from 'react'
 import { IPeerInfo } from '../../ipeerInfo'
 import { Chart } from '../chart'
-
-interface IProps {
-  details: Map<string, IPeerInfo>
-}
+import { IProps } from './iViewProps'
 
 interface IState {
   details: Map<string, IPeerInfo>

@@ -12,7 +12,7 @@ class Chart extends React.Component {
         };
         this.CountryBarChart = (details) => {
             const dataset = this.countryDatasets(details);
-            return (React.createElement(Chartjs.Bar, { data: dataset }));
+            return (React.createElement(Chartjs.Bar, { data: dataset.data, options: dataset.options }));
         };
     }
     render() {
@@ -80,18 +80,29 @@ class Chart extends React.Component {
             }
         }
         return ({
-            datasets: [{
-                    backgroundColor: [
-                        util_1.randomColor(),
-                        'salmon',
-                        'green',
-                        'tomato',
-                        util_1.randomColor(),
-                    ],
-                    data: Object.keys(data).map((key) => data[key]),
-                    label: 'Peers',
-                }],
-            labels: Object.keys(data).map((key) => `${util_1.flag(key)}${key}`),
+            data: {
+                datasets: [{
+                        backgroundColor: [
+                            util_1.randomColor(),
+                            'salmon',
+                            'green',
+                            'tomato',
+                            util_1.randomColor(),
+                        ],
+                        data: Object.keys(data).map((key) => data[key]),
+                        label: 'Peers',
+                    }],
+                labels: Object.keys(data).map((key) => `${util_1.flag(key)}${key}`),
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                            },
+                        }],
+                },
+            },
         });
     }
 }

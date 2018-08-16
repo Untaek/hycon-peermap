@@ -13,6 +13,7 @@ const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
 const chartview_1 = require("./category/chartview");
 const mapview_1 = require("./category/mapview");
+const statusview_1 = require("./category/statusview");
 const footer_1 = require("./layout/footer");
 const header_1 = require("./layout/header");
 class App extends React.Component {
@@ -24,7 +25,7 @@ class App extends React.Component {
     }
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
-            fetch('http://localhost:5885/map').then((res) => res.json()).then((json) => {
+            fetch('/map').then((res) => res.json()).then((json) => {
                 const detailsObject = json.data.details;
                 const details = new Map();
                 for (const key in detailsObject) {
@@ -43,7 +44,8 @@ class App extends React.Component {
             details ?
                 React.createElement(react_router_dom_1.Switch, null,
                     React.createElement(react_router_dom_1.Route, { exact: true, path: '/', render: (props) => React.createElement(mapview_1.MapView, Object.assign({}, props, { details: details })) }),
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/chart', render: (props) => React.createElement(chartview_1.ChartView, Object.assign({}, props, { details: details })) }))
+                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/chart', render: (props) => React.createElement(chartview_1.ChartView, Object.assign({}, props, { details: details })) }),
+                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/status', render: (props) => React.createElement(statusview_1.StatusView, Object.assign({}, props, { details: details })) }))
                 :
                     React.createElement("div", { style: { height: 500, display: 'flex' } },
                         React.createElement(core_1.CircularProgress, null),

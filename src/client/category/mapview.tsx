@@ -6,10 +6,7 @@ import { IPeerInfo } from '../../ipeerInfo'
 import { IPeer } from '../../serialization/proto'
 import { PeerDetail } from '../peerDetail'
 import { flag } from '../util'
-
-interface IProps {
-  details: Map<string, IPeerInfo>
-}
+import { IProps } from './iViewProps'
 
 interface IState {
   detail: IPeerInfo

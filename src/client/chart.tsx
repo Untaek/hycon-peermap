@@ -45,7 +45,7 @@ export class Chart extends React.Component<IProps> {
   private CountryBarChart = (details: any) => {
     const dataset = this.countryDatasets(details)
     return (
-      <Chartjs.Bar data={dataset} />
+      <Chartjs.Bar data={dataset.data} options={dataset.options} />
     )
   }
 
@@ -98,18 +98,30 @@ export class Chart extends React.Component<IProps> {
     }
 
     return ({
-      datasets: [{
-        backgroundColor: [
-          randomColor(),
-          'salmon',
-          'green',
-          'tomato',
-          randomColor(),
-        ],
-        data: Object.keys(data).map((key) => data[key]),
-        label: 'Peers',
-      }],
-      labels: Object.keys(data).map((key) => `${flag(key)}${key}`),
+      data: {
+        datasets: [{
+          backgroundColor: [
+            randomColor(),
+            'salmon',
+            'green',
+            'tomato',
+            randomColor(),
+          ],
+          data: Object.keys(data).map((key) => data[key]),
+          label: 'Peers',
+        }],
+        labels: Object.keys(data).map((key) => `${flag(key)}${key}`),
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            },
+          }],
+        },
+      },
+
     })
   }
 }

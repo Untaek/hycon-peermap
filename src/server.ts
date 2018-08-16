@@ -8,8 +8,10 @@ import favicon = require('serve-favicon')
 
 const logger = getLogger('Server')
 
+// tslint:disable no-console
 export class Server {
   private app: Express.Application
+  private hyconAdr = 'localhost:5885'
   private config = {
     host: 'localhost',
     port: 8888,
@@ -21,7 +23,7 @@ export class Server {
 
   public start() {
     this.app.listen(this.config.port, () => {
-      logger.info('Server is running... ' + '')
+      console.log('Server is running... ' + 'http://localhost:' + this.config.port)
     })
   }
 
@@ -38,7 +40,12 @@ export class Server {
   private router() {
     const router = Express.Router()
 
-    router.get('/', (req, res) => {
+    router.get('/map', (req, res) => {
+      fetch(`${this.hyconAdr}/map`).then((resp) => resp.json())
+        .then((json) => res.json(json))
+    })
+
+    router.get('*', (req, res) => {
       res.sendFile(path.resolve(__dirname, '../dist/index.html'))
     })
     return router
