@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "src/client/dist",
+    "outDir": "./build",
     "jsx": "react",
     "target": "es2016",
-    //"moduleResolution": "node",
     "module": "commonjs",
     "typeRoots": [
       "node_modules/@types"
@@ -11,6 +10,5 @@
   },
   "exclude": [
     "node_modules",
-    "/**/*.ts"
-  ]
+  ],
 }

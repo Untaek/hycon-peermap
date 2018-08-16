@@ -4,6 +4,7 @@ import helmet = require('helmet')
 import { getLogger } from 'log4js'
 import * as morgan from 'morgan'
 import path = require('path')
+import favicon = require('serve-favicon')
 
 const logger = getLogger('Server')
 
@@ -30,7 +31,7 @@ export class Server {
     this.app.use(bodyParser.json())
     this.app.use(morgan('dev'))
     this.app.use(helmet())
-
+    this.app.use(favicon(path.resolve(__dirname, '../dist/hycon.ico')))
     this.app.use('/', this.router())
   }
 

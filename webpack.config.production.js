@@ -10,6 +10,7 @@ const htmlConfig = {
   meta: {
     viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
   },
+  favicon: path.resolve(__dirname, 'dist/hycon.ico')
 }
 
 module.exports = {
