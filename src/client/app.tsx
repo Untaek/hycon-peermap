@@ -1,6 +1,7 @@
 import { CircularProgress, Typography } from '@material-ui/core'
 import * as React from 'react'
 import { Route, Switch } from 'react-router-dom'
+import * as zlib from 'zlib'
 import { IPeerInfo } from '../ipeerInfo'
 import { ChartView } from './category/chartview'
 import { MapView } from './category/mapview'
@@ -22,26 +23,14 @@ export class App extends React.Component<any, IState> {
   }
 
   public async componentDidMount() {
-    if (process.env.NODE_ENV === 'development') {
-      fetch('http://localhost:5885/map').then((res) => res.json()).then((json) => {
-        const detailsObject = json.data.details
-
-        const details = new Map<string, IPeerInfo>()
-        for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
-
-        this.setState({ details })
-      })
-    } else {
-      fetch('/map').then((res) => res.json()).then((json) => {
-        const detailsObject = json.data.details
-
-        const details = new Map<string, IPeerInfo>()
-        for (const key in detailsObject) { if (key) { details.set(key, detailsObject[key]) } }
-
-        this.setState({ details })
-      })
-    }
-
+    const response = await fetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/dataset')
+    const buf = Buffer.from(await response.arrayBuffer())
+    zlib.unzip(buf, (err, data) => {
+      const jsonObject = JSON.parse(data.toString())
+      const details = new Map<string, IPeerInfo>()
+      for (const key in jsonObject) { if (key) { details.set(key, jsonObject[key]) } }
+      this.setState({ details })
+    })
   }
 
   public render() {

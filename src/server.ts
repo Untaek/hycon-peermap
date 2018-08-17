@@ -42,16 +42,6 @@ export class Server {
   private router() {
     const router = Express.Router()
 
-    router.get('/map', async (req, res) => {
-      const response = await axios.get(`${this.hyconPeerMapAdr}/map`)
-      res.json(response.data)
-    })
-
-    router.get('/status', async (req, res) => {
-      const response = await axios.get(`${this.hyconPeerMapAdr}/status`)
-      res.json(response.data)
-    })
-
     router.get('*', (req, res) => {
       res.sendFile(path.resolve(__dirname, '../dist/index.html'))
     })

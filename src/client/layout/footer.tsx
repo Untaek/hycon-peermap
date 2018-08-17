@@ -5,7 +5,7 @@ export class Footer extends React.Component {
 
   public render() {
     return (
-      <footer style={{ padding: 70 }}>
+      <footer style={{ padding: 70, backgroundColor: '#eeeeee' }}>
         <Typography align='center' gutterBottom variant='title'>
           HYCON
         </Typography>

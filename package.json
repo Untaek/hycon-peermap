@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --config=webpack.config.production.js && tsc",
     "dev:cl": "npx webpack-dev-server --hot --inline",
-    "dev:sv": "npx nodemon --exec npx ts-node src/main.ts"
+    "dev:sv": "npx nodemon --exec npx ts-node src/main.ts",
+    "serve": "cd dist; ../node_modules/.bin/serve"
   },
   "author": "Untaek",
   "license": "ISC",
@@ -60,6 +61,7 @@
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
+    "serve": "^9.6.0",
     "serve-favicon": "^2.5.0",
     "vis": "^4.21.0"
   }
