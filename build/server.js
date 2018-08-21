@@ -11,10 +11,8 @@ const logger = log4js_1.getLogger('Server');
 // tslint:disable no-console
 class Server {
     constructor() {
-        this.hyconPeerMapAdr = 'http://localhost:5885';
-        this.hyconRestServerAdr = 'http://localhost:2442';
         this.config = {
-            host: 'localhost',
+            host: '0.0.0.0',
             port: 8888,
         };
         this.init();

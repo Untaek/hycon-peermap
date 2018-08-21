@@ -21,6 +21,8 @@ class App extends React.Component {
     /* tslint:disable object-literal-sort-keys */
     constructor(props) {
         super(props);
+        this.datasetUrl = 'https://s3-us-west-2.amazonaws.com/peermap/dataset';
+        this.statusUrl = 'https://s3-us-west-2.amazonaws.com/peermap/status';
         this.state = {
             details: undefined,
             status: undefined,
@@ -31,8 +33,8 @@ class App extends React.Component {
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
             const polling = () => __awaiter(this, void 0, void 0, function* () {
-                const detailsObject = yield this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/dataset');
-                const status = yield this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/status');
+                const detailsObject = yield this.gzipFetch(this.datasetUrl);
+                const status = yield this.gzipFetch(this.statusUrl);
                 const startTime = new Date(detailsObject.startTime);
                 const details = new Map();
                 for (const key in detailsObject.details) {

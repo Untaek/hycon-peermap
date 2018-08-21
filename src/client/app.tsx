@@ -18,6 +18,9 @@ interface IState {
 }
 
 export class App extends React.Component<any, IState> {
+  private datasetUrl = 'https://s3-us-west-2.amazonaws.com/peermap/dataset'
+  private statusUrl = 'https://s3-us-west-2.amazonaws.com/peermap/status'
+
   /* tslint:disable object-literal-sort-keys */
   constructor(props: any) {
     super(props)
@@ -31,8 +34,8 @@ export class App extends React.Component<any, IState> {
 
   public async componentDidMount() {
     const polling = async () => {
-      const detailsObject = await this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/dataset')
-      const status = await this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/status')
+      const detailsObject = await this.gzipFetch(this.datasetUrl)
+      const status = await this.gzipFetch(this.statusUrl)
       const startTime = new Date(detailsObject.startTime)
       const details = new Map<string, IPeerInfo>()
       for (const key in detailsObject.details) { if (key) { details.set(key, detailsObject.details[key]) } }
