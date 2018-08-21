@@ -12,6 +12,14 @@ export class Chart extends React.Component<IProps> {
   public static PEER_VERSION = 'version'
   public static PEER_COUNTRY = 'country'
 
+  private colors: string[] = [
+    '#0099ff',
+    '#009933',
+    '#ff9900',
+    '#ff33cc',
+    '#999966',
+  ]
+
   constructor(props: IProps) {
     super(props)
   }
@@ -64,12 +72,7 @@ export class Chart extends React.Component<IProps> {
       return ({
         datasets: [
           {
-            backgroundColor: [
-              'pink',
-              'salmon',
-              'green',
-              'tomato',
-            ],
+            backgroundColor: this.colors,
             data: Object.keys(data).map((key) => data[key]),
             options: {
               title: {
@@ -100,13 +103,7 @@ export class Chart extends React.Component<IProps> {
     return ({
       data: {
         datasets: [{
-          backgroundColor: [
-            randomColor(),
-            'salmon',
-            'green',
-            'tomato',
-            randomColor(),
-          ],
+          backgroundColor: this.colors,
           data: Object.keys(data).map((key) => data[key]),
           label: 'Peers',
         }],

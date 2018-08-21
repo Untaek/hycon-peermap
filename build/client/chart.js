@@ -6,6 +6,13 @@ const util_1 = require("./util");
 class Chart extends React.Component {
     constructor(props) {
         super(props);
+        this.colors = [
+            '#0099ff',
+            '#009933',
+            '#ff9900',
+            '#ff33cc',
+            '#999966',
+        ];
         this.VersionPieChart = (details) => {
             const dataset = this.versionDatasets(details);
             return (React.createElement(Chartjs.Doughnut, { data: dataset }));
@@ -47,12 +54,7 @@ class Chart extends React.Component {
             return ({
                 datasets: [
                     {
-                        backgroundColor: [
-                            'pink',
-                            'salmon',
-                            'green',
-                            'tomato',
-                        ],
+                        backgroundColor: this.colors,
                         data: Object.keys(data).map((key) => data[key]),
                         options: {
                             title: {
@@ -82,13 +84,7 @@ class Chart extends React.Component {
         return ({
             data: {
                 datasets: [{
-                        backgroundColor: [
-                            util_1.randomColor(),
-                            'salmon',
-                            'green',
-                            'tomato',
-                            util_1.randomColor(),
-                        ],
+                        backgroundColor: this.colors,
                         data: Object.keys(data).map((key) => data[key]),
                         label: 'Peers',
                     }],

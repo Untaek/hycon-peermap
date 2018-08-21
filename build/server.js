@@ -11,7 +11,8 @@ const logger = log4js_1.getLogger('Server');
 // tslint:disable no-console
 class Server {
     constructor() {
-        this.hyconAdr = 'localhost:5885';
+        this.hyconPeerMapAdr = 'http://localhost:5885';
+        this.hyconRestServerAdr = 'http://localhost:2442';
         this.config = {
             host: 'localhost',
             port: 8888,
@@ -34,10 +35,6 @@ class Server {
     }
     router() {
         const router = Express.Router();
-        router.get('/map', (req, res) => {
-            fetch(`${this.hyconAdr}/map`).then((resp) => resp.json())
-                .then((json) => res.json(json));
-        });
         router.get('*', (req, res) => {
             res.sendFile(path.resolve(__dirname, '../dist/index.html'));
         });

@@ -1,4 +1,4 @@
-import { Divider, List, ListItem, ListItemText, ListSubheader } from '@material-ui/core'
+import { BottomNavigation, BottomNavigationAction, Button, Card, Divider, Grid, GridList, GridListTile, List, ListItem, ListItemText, ListSubheader } from '@material-ui/core'
 import * as React from 'react'
 import { Map as MAAP, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
 import * as vis from 'vis'
@@ -14,19 +14,27 @@ interface IState {
   edges: vis.DataSet<vis.Edge>
   nodes: vis.DataSet<vis.Node>
   network: vis.Network
-  category: string
+  category: number
 }
 
 export class MapView extends React.Component<IProps, IState> {
   private buttons: string[] = [
     'circle', 'scatter', /*"location",*/ 'version',
   ]
+  private colors: string[] = [
+    '#0099ff',
+    '#009933',
+    '#ff9900',
+    '#ff33cc',
+    '#999966',
+  ]
+
   private display: HTMLDivElement
 
   constructor(props) {
     super(props)
     this.state = {
-      category: 'scatter',
+      category: 0,
       detail: undefined,
       details: this.props.details,
       edges: undefined,
@@ -36,22 +44,59 @@ export class MapView extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    if (this.state.details) {
-      const nodes = this.generateNodes(this.state.details)
-      const edges = this.generateEdges(this.state.details)
-      const network = this.generateNetwork(nodes, edges, this.display)
+    const nodes = this.generateNodes(this.state.details)
+    const edges = this.generateEdges(this.state.details)
+    const network = this.generateNetwork(nodes, edges, this.display)
 
-      this.setState({ edges, network, nodes })
-    }
-
+    this.setState({ edges, network, nodes })
   }
 
-  public buttonHandler(category: string) {
-    this.setState({ category })
-    this.changeCategory(category)
+  public render() {
+    return (
+      <div style={{ backgroundColor: '#eeeeee', padding: 16 }}>
+        <Grid container justify='center' spacing={24}>
+          <Grid item xs={6} style={{ height: '100%' }}>
+            <Grid container direction='column'>
+              <Grid style={{ position: 'absolute', left: 40, top: 200 }}>
+                <PeerDetail detail={this.state.detail} peerSize={this.state.details.size} startTime={this.props.startTime} />
+              </Grid>
+              <Grid item container style={{ position: 'absolute', left: 40, zIndex: 10 }}>
+                <BottomNavigation
+                  value={this.state.category}
+                  onChange={this.handleTabChange}
+                  showLabels
+                >
+                  {
+                    this.buttons.map((name) => (
+                      <BottomNavigationAction label={name} />
+                    ))
+                  }
+                </BottomNavigation>
+              </Grid>
+              <Card style={{ backgroundColor: 'white' }}>
+                {/* For peer map canvas */}
+                <div style={{ height: 720 }} ref={(c) => this.display = c} />
+              </Card>
+            </Grid>
+          </Grid>
+          <Grid item xs={6}>
+            <Card>
+              <MAAP style={{ height: 720, width: '100%' }} center={{ lat: 1, lng: 1 }} zoom={2}>
+                <TileLayer
+                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                  attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+                />
+                {this.createMarkers()}
+                {this.createPolylines()}
+              </MAAP>
+            </Card>
+          </Grid>
+        </Grid>
+      </div>
+    )
   }
 
-  public changeCategory(type: string) {
+  private changeCategory(type: number) {
     let theta = 360 / this.state.details.size
     let r = 1200
     let i = 0
@@ -59,7 +104,7 @@ export class MapView extends React.Component<IProps, IState> {
       this.setState({ network: this.generateNetwork(this.state.nodes, this.state.edges, this.display) })
     }
     switch (type) {
-      case 'circle':
+      case 0:
         this.state.nodes.forEach((node) => {
           node.x = r * Math.cos(theta * i * Math.PI / 180)
           node.y = r * Math.sin(theta * i * Math.PI / 180)
@@ -71,7 +116,7 @@ export class MapView extends React.Component<IProps, IState> {
         })
 
         break
-      case 'scatter':
+      case 1:
         this.state.nodes.forEach((node) => {
           node.x = Math.random() * 1000
           node.y = Math.random() * 100
@@ -93,9 +138,9 @@ export class MapView extends React.Component<IProps, IState> {
       //   this.setState({ network: undefined })
 
       //   break
-      case 'version':
+      case 2:
         theta = 360 / 8
-        r = 1600
+        r = 3600
         this.state.nodes.forEach((node) => {
           const version = this.state.details.get(node.id.toString()).status.version
           node.x = r * Math.cos(theta * version * Math.PI / 180)
@@ -113,11 +158,12 @@ export class MapView extends React.Component<IProps, IState> {
             enabled: true,
           },
         })
+        this.state.network.stabilize()
         break
     }
   }
 
-  public generateNodes(details: Map<string, IPeerInfo>): vis.DataSet<vis.Node> {
+  private generateNodes(details: Map<string, IPeerInfo>): vis.DataSet<vis.Node> {
     const nodes: any = []
 
     details.forEach((detail, key) => {
@@ -135,13 +181,13 @@ export class MapView extends React.Component<IProps, IState> {
       node.size = size * 2 + 25
 
       if (version === 5) {
-        node.color = 'pink'
+        node.color = this.colors[0]
       } else if (version === 7) {
-        node.color = 'salmon'
+        node.color = this.colors[1]
       } else if (version === 8) {
-        node.color = 'green'
+        node.color = this.colors[2]
       } else if (version === 9) {
-        node.color = 'tomato'
+        node.color = this.colors[3]
       }
 
       nodes.push(node)
@@ -149,7 +195,7 @@ export class MapView extends React.Component<IProps, IState> {
     return new vis.DataSet(nodes)
   }
 
-  public generateEdges(details: Map<string, IPeerInfo>): vis.DataSet<vis.Edge> {
+  private generateEdges(details: Map<string, IPeerInfo>): vis.DataSet<vis.Edge> {
     const edges: any[] = []
 
     details.forEach((detail, key) => {
@@ -177,7 +223,7 @@ export class MapView extends React.Component<IProps, IState> {
     return new vis.DataSet(edges)
   }
 
-  public generateNetwork(nodes: vis.DataSet<vis.Node>, edges: vis.DataSet<vis.Edge>, display: HTMLElement): vis.Network {
+  private generateNetwork(nodes: vis.DataSet<vis.Node>, edges: vis.DataSet<vis.Edge>, display: HTMLElement): vis.Network {
     const network = new vis.Network(
       display,
       { edges, nodes },
@@ -188,7 +234,7 @@ export class MapView extends React.Component<IProps, IState> {
           arrows: { to: { enabled: true } },
           smooth: false,
         },
-        height: '700',
+
         layout: {
           improvedLayout: true,
         },
@@ -218,34 +264,32 @@ export class MapView extends React.Component<IProps, IState> {
 
     return network
   }
-  public createMarkers() {
-    if (this.state.details) {
-      const markers = []
-      for (const peer of this.state.details.values()) {
-        if (peer.location) {
-          markers.push(
-            <Marker
-              position={{ lat: peer.location.ll[0], lng: peer.location.ll[1] }}
-              onClick={(e: any) => {
-                const x = this.state.nodes.get(`${peer.host}:${peer.port}`).x
-                const y = this.state.nodes.get(`${peer.host}:${peer.port}`).y
-                this.setState({ detail: peer })
-                this.state.network.selectNodes([`${peer.host}:${peer.port}`])
-                this.state.network.focus(`${peer.host}:${peer.port}`, { animation: true })
-              }}
-            >
-              <Popup>{`${peer.host}:${peer.port}`}</Popup>
-            </Marker>,
-          )
-        }
+  private createMarkers() {
+    const markers = []
+    for (const peer of this.state.details.values()) {
+      if (peer.location) {
+        const key = `${peer.host}:${peer.port}`
+        markers.push(
+          <Marker
+            key={key}
+            position={{ lat: peer.location.ll[0], lng: peer.location.ll[1] }}
+            onClick={(e: any) => {
+              const x = this.state.nodes.get(key).x
+              const y = this.state.nodes.get(key).y
+              this.setState({ detail: peer })
+              this.state.network.selectNodes([key])
+              this.state.network.focus(key, { animation: true })
+            }}
+          >
+            <Popup key={key}>{key + 1}</Popup>
+          </Marker>,
+        )
       }
-      return markers
     }
+    return markers
   }
 
-  public createPolylines() {
-    const lats: any[] = []
-    const lngs: any[] = []
+  private createPolylines() {
     const latlngs: any[] = []
     if (this.state.details) {
       const details = this.state.details
@@ -266,39 +310,8 @@ export class MapView extends React.Component<IProps, IState> {
     return <Polyline color='blue' weight={0.4} positions={latlngs} />
   }
 
-  public render() {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ borderRight: '1px solid #b3e0ff' }}>
-          <List component='nav' subheader={<ListSubheader disableSticky component='div' >Category</ListSubheader>}>
-            <Divider />
-            {
-              this.buttons.map((name) => (
-                <ListItem divider button onClick={(e) => this.buttonHandler(name)}>
-                  <ListItemText primary={name} />
-                </ListItem>
-              ))
-            }
-          </List>
-        </div>
-        <div style={{ position: 'absolute', left: 140 }}>
-          {
-            this.state.details ? <PeerDetail detail={this.state.detail} peerSize={this.state.details.size} /> : ''
-          }
-        </div>
-        <div ref={(c) => this.display = c} style={{ flex: 1 }} />
-        <div style={{ height: 700, flex: 1 }}>
-          <MAAP style={{ height: '100%', width: '100%', flex: 1 }} center={{ lat: 1, lng: 1 }} zoom={2}>
-            <TileLayer
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              attribution='&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-            />
-            {this.createMarkers()}
-            {this.createPolylines()}
-          </MAAP>
-        </div>
-
-      </div>
-    )
+  private handleTabChange = (e, v) => {
+    this.setState({ category: v })
+    this.changeCategory(v)
   }
 }

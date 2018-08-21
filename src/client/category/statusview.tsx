@@ -8,32 +8,34 @@ export class StatusView extends React.Component<IProps> {
 
   public render() {
     return (
-      <div>
+      <div style={{ backgroundColor: '#eeeeee', padding: 16 }}>
         <Grid
           container
           direction='column'
-          justify='space-between'
-          style={{ padding: 16 }}
+          justify='center'
           spacing={16}
         >
           <Grid item>
             <Paper elevation={2} style={{ padding: 16 }}>
               <Typography variant='subheading' component='h3'>
-                Block height
+                Current Block height
             </Typography>
               <Typography variant='title' component='h1'>
-                123456
-            </Typography>
+                {this.props.status.blockHeight}
+              </Typography>
             </Paper>
           </Grid>
           <Grid item>
             <Paper elevation={2} style={{ padding: 16 }}>
               <Typography variant='subheading' component='h3'>
-                Current difficulty
-            </Typography>
+                Current difficulty <Typography color='textSecondary'>(Convert to Hexadecimal)</Typography>
+              </Typography>
               <Typography variant='title' component='h1'>
-                123456235325
-            </Typography>
+                {this.props.status.difficulty}
+              </Typography>
+              <Typography variant='subheading' component='h2' color='textSecondary'>
+                (0x{this.getHexTarget(this.props.status.difficulty)})
+              </Typography>
             </Paper>
           </Grid>
           <Grid item>
@@ -42,8 +44,8 @@ export class StatusView extends React.Component<IProps> {
                 Presumed hash power
             </Typography>
               <Typography variant='title' component='h1'>
-                123456234
-            </Typography>
+                {`${(1 / (this.props.status.difficulty * 30 / Math.LN2) / 1000).toFixed(2)} Khs`}
+              </Typography>
             </Paper>
           </Grid>
 
@@ -51,5 +53,19 @@ export class StatusView extends React.Component<IProps> {
 
       </div>
     )
+  }
+
+  private getHexTarget(p: number, length: number = 32) {
+    if (p > 1) { p = 1 }
+    if (p < Math.pow(0x100, -length)) { p = Math.pow(0x100, -length) }
+    const target = Buffer.alloc(length)
+    let carry = 0
+    for (let i = length - 1; i >= 0; i--) {
+      carry = (0x100 * carry) + (p * 0xFF)
+      target[i] = Math.floor(carry)
+      carry -= target[i]
+    }
+    const buf = Buffer.from(target.slice(0, 32))
+    return Buffer.from(buf.reverse()).toString('hex')
   }
 }

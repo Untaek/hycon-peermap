@@ -11,46 +11,61 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@material-ui/core");
 const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
+const zlib = require("zlib");
 const chartview_1 = require("./category/chartview");
 const mapview_1 = require("./category/mapview");
 const statusview_1 = require("./category/statusview");
 const footer_1 = require("./layout/footer");
 const header_1 = require("./layout/header");
 class App extends React.Component {
+    /* tslint:disable object-literal-sort-keys */
     constructor(props) {
         super(props);
         this.state = {
             details: undefined,
+            status: undefined,
+            isLoading: true,
+            startTime: undefined,
         };
     }
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
-            fetch('/map').then((res) => res.json()).then((json) => {
-                const detailsObject = json.data.details;
+            const polling = () => __awaiter(this, void 0, void 0, function* () {
+                const detailsObject = yield this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/dataset');
+                const status = yield this.gzipFetch('https://s3.ap-northeast-2.amazonaws.com/peermap1/status');
+                const startTime = new Date(detailsObject.startTime);
                 const details = new Map();
-                for (const key in detailsObject) {
+                for (const key in detailsObject.details) {
                     if (key) {
-                        details.set(key, detailsObject[key]);
+                        details.set(key, detailsObject.details[key]);
                     }
                 }
-                this.setState({ details });
+                this.setState({ details, status, startTime, isLoading: false });
             });
+            polling();
+            setInterval(polling, 5000);
         });
     }
     render() {
-        const details = this.state.details;
-        return (React.createElement("div", null,
+        return (React.createElement("div", { style: { minHeight: '100%' } },
             React.createElement(header_1.Header, null),
-            details ?
-                React.createElement(react_router_dom_1.Switch, null,
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/', render: (props) => React.createElement(mapview_1.MapView, Object.assign({}, props, { details: details })) }),
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/chart', render: (props) => React.createElement(chartview_1.ChartView, Object.assign({}, props, { details: details })) }),
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: '/status', render: (props) => React.createElement(statusview_1.StatusView, Object.assign({}, props, { details: details })) }))
+            this.state.isLoading ?
+                React.createElement(core_1.Grid, { style: { padding: 160 }, container: true, justify: 'center' },
+                    React.createElement(core_1.CircularProgress, { size: 42 }))
                 :
-                    React.createElement("div", { style: { height: 500, display: 'flex' } },
-                        React.createElement(core_1.CircularProgress, null),
-                        React.createElement(core_1.Typography, null, "Now loading...")),
+                    React.createElement(react_router_dom_1.Switch, null,
+                        React.createElement(react_router_dom_1.Route, { exact: true, path: '/', render: (props) => React.createElement(mapview_1.MapView, Object.assign({}, props, { details: this.state.details, startTime: this.state.startTime })) }),
+                        React.createElement(react_router_dom_1.Route, { exact: true, path: '/chart', render: (props) => React.createElement(chartview_1.ChartView, Object.assign({}, props, { details: this.state.details })) }),
+                        React.createElement(react_router_dom_1.Route, { exact: true, path: '/status', render: (props) => React.createElement(statusview_1.StatusView, Object.assign({}, props, { status: this.state.status })) })),
             React.createElement(footer_1.Footer, null)));
+    }
+    gzipFetch(url) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(url);
+            const buffer = zlib.unzipSync(Buffer.from(yield response.arrayBuffer()));
+            const object = JSON.parse(buffer.toString());
+            return object;
+        });
     }
 }
 exports.App = App;

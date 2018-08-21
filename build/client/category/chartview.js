@@ -11,17 +11,17 @@ class ChartView extends React.Component {
         };
     }
     render() {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { style: { backgroundColor: '#eeeeee' } },
             React.createElement(core_1.GridList, { cellHeight: 'auto' },
                 React.createElement(core_1.GridListTile, { key: 'versions' },
                     React.createElement(core_1.Card, { style: { margin: 16 } },
+                        React.createElement(core_1.CardHeader, { title: 'Version', subheader: 'Version share of the network' }),
                         React.createElement(core_1.CardContent, null,
-                            React.createElement(core_1.Typography, { component: 'h2', variant: 'headline', style: { borderBottom: '1px solid #aaaaaa' } }, "Versions"),
                             React.createElement(chart_1.Chart, { mode: chart_1.Chart.PEER_VERSION, details: this.state.details })))),
                 React.createElement(core_1.GridListTile, { key: 'countries' },
                     React.createElement(core_1.Card, { style: { margin: 16 } },
+                        React.createElement(core_1.CardHeader, { title: 'Countries', subheader: 'Counrty share of the network' }),
                         React.createElement(core_1.CardContent, null,
-                            React.createElement(core_1.Typography, { component: 'h2', variant: 'headline', style: { borderBottom: '1px solid #aaaaaa' } }, "Countries"),
                             React.createElement(chart_1.Chart, { mode: chart_1.Chart.PEER_COUNTRY, details: this.state.details })))))));
     }
 }

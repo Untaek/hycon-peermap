@@ -12,10 +12,8 @@ const logger = getLogger('Server')
 // tslint:disable no-console
 export class Server {
   private app: Express.Application
-  private hyconPeerMapAdr = 'http://localhost:5885'
-  private hyconRestServerAdr = 'http://localhost:2442'
   private config = {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8888,
   }
 
