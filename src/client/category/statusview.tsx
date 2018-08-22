@@ -34,7 +34,7 @@ export class StatusView extends React.Component<IProps> {
                 {this.props.status.difficulty}
               </Typography>
               <Typography variant='subheading' component='h2' color='textSecondary'>
-                (0x{this.getHexTarget(this.props.status.difficulty)})
+                (0x{this.getHexTarget(this.props.status.difficulty)}...)
               </Typography>
             </Paper>
           </Grid>
@@ -65,7 +65,7 @@ export class StatusView extends React.Component<IProps> {
       target[i] = Math.floor(carry)
       carry -= target[i]
     }
-    const buf = Buffer.from(target.slice(0, 32))
+    const buf = Buffer.from(target.slice(24, 32))
     return Buffer.from(buf.reverse()).toString('hex')
   }
 }
