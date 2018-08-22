@@ -13,6 +13,18 @@ ReactGA.initialize('UA-116359227-2')
 ReactGA.pageview(window.location.pathname + window.location.search)
 
 const theme = createMuiTheme({
+  overrides: {
+    MuiTabs: {
+      root: {
+        color: 'white',
+      },
+    },
+    MuiTypography: {
+      colorInherit: {
+        color: '#dddddd',
+      },
+    },
+  },
   palette: {
     primary: lightBlue,
     secondary: blue,

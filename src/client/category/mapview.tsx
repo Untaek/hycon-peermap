@@ -24,8 +24,8 @@ export class MapView extends React.Component<IProps, IState> {
   private colors: string[] = [
     '#0099ff',
     '#009933',
-    '#ff9900',
-    '#ff33cc',
+    '#ace600',
+    '#33cccc',
     '#999966',
   ]
 

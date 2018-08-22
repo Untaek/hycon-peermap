@@ -22,7 +22,7 @@ class StatusView extends React.Component {
                         React.createElement(core_1.Typography, { variant: 'subheading', component: 'h2', color: 'textSecondary' },
                             "(0x",
                             this.getHexTarget(this.props.status.difficulty),
-                            ")"))),
+                            "...)"))),
                 React.createElement(core_1.Grid, { item: true },
                     React.createElement(core_1.Paper, { elevation: 2, style: { padding: 16 } },
                         React.createElement(core_1.Typography, { variant: 'subheading', component: 'h3' }, "Presumed hash power"),
@@ -42,7 +42,7 @@ class StatusView extends React.Component {
             target[i] = Math.floor(carry);
             carry -= target[i];
         }
-        const buf = Buffer.from(target.slice(0, 32));
+        const buf = Buffer.from(target.slice(24, 32));
         return Buffer.from(buf.reverse()).toString('hex');
     }
 }

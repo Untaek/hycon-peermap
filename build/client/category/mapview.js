@@ -15,8 +15,8 @@ class MapView extends React.Component {
         this.colors = [
             '#0099ff',
             '#009933',
-            '#ff9900',
-            '#ff33cc',
+            '#ace600',
+            '#33cccc',
             '#999966',
         ];
         this.handleTabChange = (e, v) => {

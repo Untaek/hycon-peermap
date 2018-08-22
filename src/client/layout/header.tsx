@@ -20,6 +20,7 @@ export class Header extends React.Component<any, IState> {
 
   public render() {
     const url = window.location.pathname.split('/')[1]
+
     return (
       <AppBar position='sticky' color='primary'>
         <Toolbar>

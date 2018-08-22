@@ -10,6 +10,18 @@ const app_1 = require("./app");
 ReactGA.initialize('UA-116359227-2');
 ReactGA.pageview(window.location.pathname + window.location.search);
 const theme = core_1.createMuiTheme({
+    overrides: {
+        MuiTabs: {
+            root: {
+                color: 'white',
+            },
+        },
+        MuiTypography: {
+            colorInherit: {
+                color: '#dddddd',
+            },
+        },
+    },
     palette: {
         primary: colors_1.lightBlue,
         secondary: colors_1.blue,
