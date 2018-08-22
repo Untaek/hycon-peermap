@@ -41,7 +41,7 @@ class MapView extends React.Component {
     render() {
         return (React.createElement("div", { style: { backgroundColor: '#eeeeee', padding: 16 } },
             React.createElement(core_1.Grid, { container: true, justify: 'center', spacing: 24 },
-                React.createElement(core_1.Grid, { item: true, xs: 6, style: { height: '100%' } },
+                React.createElement(core_1.Grid, { item: true, xs: 12, md: 6, style: { height: '100%' } },
                     React.createElement(core_1.Grid, { container: true, direction: 'column' },
                         React.createElement(core_1.Grid, { style: { position: 'absolute', left: 40, top: 200 } },
                             React.createElement(peerDetail_1.PeerDetail, { detail: this.state.detail, peerSize: this.state.details.size, startTime: this.props.startTime })),
@@ -49,7 +49,7 @@ class MapView extends React.Component {
                             React.createElement(core_1.BottomNavigation, { value: this.state.category, onChange: this.handleTabChange, showLabels: true }, this.buttons.map((name) => (React.createElement(core_1.BottomNavigationAction, { label: name }))))),
                         React.createElement(core_1.Card, { style: { backgroundColor: 'white' } },
                             React.createElement("div", { style: { height: 720 }, ref: (c) => this.display = c })))),
-                React.createElement(core_1.Grid, { item: true, xs: 6 },
+                React.createElement(core_1.Grid, { item: true, xs: 12, md: 6 },
                     React.createElement(core_1.Card, null,
                         React.createElement(react_leaflet_1.Map, { style: { height: 720, width: '100%' }, center: { lat: 1, lng: 1 }, zoom: 2 },
                             React.createElement(react_leaflet_1.TileLayer, { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00A9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' }),
@@ -163,7 +163,7 @@ class MapView extends React.Component {
                 else {
                     edge.color = { color: 'grey' };
                 }
-                if (edge.from === '::ffff:118.40.192.72:8148' || edge.from === '118.40.192.72:8148') {
+                if (edge.from === '118.40.192.72:8148') {
                     edge.hidden = true;
                 }
                 return edge;

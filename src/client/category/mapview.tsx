@@ -55,7 +55,7 @@ export class MapView extends React.Component<IProps, IState> {
     return (
       <div style={{ backgroundColor: '#eeeeee', padding: 16 }}>
         <Grid container justify='center' spacing={24}>
-          <Grid item xs={6} style={{ height: '100%' }}>
+          <Grid item xs={12} md={6} style={{ height: '100%' }}>
             <Grid container direction='column'>
               <Grid style={{ position: 'absolute', left: 40, top: 200 }}>
                 <PeerDetail detail={this.state.detail} peerSize={this.state.details.size} startTime={this.props.startTime} />
@@ -79,7 +79,7 @@ export class MapView extends React.Component<IProps, IState> {
               </Card>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Card>
               <MAAP style={{ height: 720, width: '100%' }} center={{ lat: 1, lng: 1 }} zoom={2}>
                 <TileLayer
@@ -211,7 +211,7 @@ export class MapView extends React.Component<IProps, IState> {
           } else {
             edge.color = { color: 'grey' }
           }
-          if (edge.from === '::ffff:118.40.192.72:8148' || edge.from === '118.40.192.72:8148') {
+          if (edge.from === '118.40.192.72:8148') {
             edge.hidden = true
           }
 

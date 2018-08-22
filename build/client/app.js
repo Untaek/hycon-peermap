@@ -23,6 +23,8 @@ class App extends React.Component {
         super(props);
         this.datasetUrl = 'https://s3-us-west-2.amazonaws.com/peermap/dataset';
         this.statusUrl = 'https://s3-us-west-2.amazonaws.com/peermap/status';
+        this.datasetUrltest = 'https://s3.ap-northeast-2.amazonaws.com/peermap1/dataset';
+        this.statusUrltest = 'https://s3.ap-northeast-2.amazonaws.com/peermap1/status';
         this.state = {
             details: undefined,
             status: undefined,
@@ -34,7 +36,7 @@ class App extends React.Component {
         return __awaiter(this, void 0, void 0, function* () {
             const polling = () => __awaiter(this, void 0, void 0, function* () {
                 const detailsObject = yield this.gzipFetch(this.datasetUrl);
-                const status = yield this.gzipFetch(this.statusUrl);
+                const status = yield this.gzipFetch(this.datasetUrl);
                 const startTime = new Date(detailsObject.startTime);
                 const details = new Map();
                 for (const key in detailsObject.details) {

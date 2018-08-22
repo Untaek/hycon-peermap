@@ -23,10 +23,9 @@ export class Header extends React.Component<any, IState> {
     return (
       <AppBar position='sticky' color='primary'>
         <Toolbar>
-          <Typography variant='title' color='inherit' style={{ flexGrow: 1 }}><Link style={{ textDecoration: 'none', color: 'white' }} to='/'>HYCON MAP</Link></Typography>
-          <a href='https://hycon.io/'><img alt='hycon.io' src={'./hycon_white.png'} style={{ maxHeight: 50, position: 'absolute', right: 40 }} /></a>
+          <Typography align='center' variant='title' color='inherit' style={{ flexGrow: 1 }}><Link style={{ textDecoration: 'none', color: 'white' }} to='/'>HYCON MAP</Link></Typography>
         </Toolbar>
-        <Tabs value={this.urls.findIndex((urls) => urls === url)}>
+        <Tabs centered value={this.urls.findIndex((urls) => urls === url)}>
           // @ts-ignore
           <Tab label='map' to='/' component={Link} />
           // @ts-ignore
