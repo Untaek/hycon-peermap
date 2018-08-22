@@ -1,4 +1,5 @@
-import { CircularProgress, Grid, Typography } from '@material-ui/core'
+import { CircularProgress, Grid, IconButton, Snackbar } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import * as React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import * as zlib from 'zlib'
@@ -14,7 +15,8 @@ interface IState {
   details: Map<string, IPeerInfo>,
   status: IStatus,
   isLoading: boolean,
-  startTime: Date
+  startTime: Date,
+  snackOpen: boolean
 }
 
 export class App extends React.Component<any, IState> {
@@ -31,13 +33,14 @@ export class App extends React.Component<any, IState> {
       status: undefined,
       isLoading: true,
       startTime: undefined,
+      snackOpen: true,
     }
   }
 
   public async componentDidMount() {
     const polling = async () => {
       const detailsObject = await this.gzipFetch(this.datasetUrl)
-      const status = await this.gzipFetch(this.datasetUrl)
+      const status = await this.gzipFetch(this.statusUrl)
       const startTime = new Date(detailsObject.startTime)
       const details = new Map<string, IPeerInfo>()
       for (const key in detailsObject.details) { if (key) { details.set(key, detailsObject.details[key]) } }
@@ -52,6 +55,12 @@ export class App extends React.Component<any, IState> {
   public render() {
     return (
       <div style={{ minHeight: '100%' }}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          open={this.state.snackOpen}
+          onClose={this.handleSnackClose}
+          autoHideDuration={7000}
+          message={this.snackContent()} />
         <Header />
         {
           this.state.isLoading ?
@@ -70,6 +79,26 @@ export class App extends React.Component<any, IState> {
         }
         <Footer />
       </div >
+    )
+  }
+
+  public handleSnackClose = () => {
+    this.setState({ snackOpen: false })
+  }
+
+  private snackContent() {
+    return (
+      <div>
+        <span>We are constantly improving... Thanks!</span>
+        <IconButton
+          key='close'
+          aria-label='Close'
+          color='inherit'
+          onClick={this.handleSnackClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      </div>
     )
   }
 

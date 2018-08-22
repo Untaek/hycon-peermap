@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Chartjs from 'react-chartjs-2'
 import { IPeerInfo } from '../ipeerInfo'
-import { flag, randomColor } from './util'
+import { flag } from './util'
 
 interface IProps {
   details: Map<string, IPeerInfo>

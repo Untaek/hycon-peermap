@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Grid, GridList, GridListTile, ListSubheader, Typography } from '@material-ui/core'
+import { Card, CardContent, CardHeader, Grid } from '@material-ui/core'
 import * as React from 'react'
 import { IPeerInfo } from '../../ipeerInfo'
 import { Chart } from '../chart'
