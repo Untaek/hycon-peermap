@@ -9,6 +9,7 @@ export class StatusView extends React.Component<IProps> {
   public render() {
     return (
       <div style={{ backgroundColor: '#eeeeee', padding: 16 }}>
+        <Typography variant='display1' style={{ paddingTop: 36, paddingBottom: 36 }}>Latest HYCON Blockchain status</Typography>
         <Grid
           container
           direction='column'

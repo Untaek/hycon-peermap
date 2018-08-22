@@ -16,7 +16,7 @@ export class Chart extends React.Component<IProps> {
     '#0099ff',
     '#009933',
     '#ff9900',
-    '#ff33cc',
+    '#33cccc',
     '#999966',
   ]
 

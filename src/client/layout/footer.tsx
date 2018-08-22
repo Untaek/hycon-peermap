@@ -6,7 +6,7 @@ export class Footer extends React.Component {
 
   public render() {
     return (
-      <Grid style={{ paddingTop: 80, height: 600, backgroundColor: blue.A400 }}>
+      <Grid style={{ paddingTop: 80, paddingBottom: 120, backgroundColor: lightBlue['500'] }}>
         <Typography align='center' gutterBottom variant='display1' >
           <a href='https://hycon.io/'><img alt='hycon.io' src={'./hycon_white.png'} style={{ maxHeight: 64 }} /></a>
         </Typography>
