@@ -22,8 +22,7 @@ export class ChartView extends React.Component<IProps, IState> {
           <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
-                title='Version'
-                subheader='Version share of the network'
+                title='Version Distribution'
               />
               <CardContent>
                 <Chart mode={Chart.PEER_VERSION} details={this.state.details} />
@@ -33,8 +32,7 @@ export class ChartView extends React.Component<IProps, IState> {
           <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
-                title='Countries'
-                subheader='Counrty share of the network'
+                title='Geographical Distribution'
               />
               <CardContent>
                 <Chart mode={Chart.PEER_COUNTRY} details={this.state.details} />

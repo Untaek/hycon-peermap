@@ -81,14 +81,14 @@ export class App extends React.Component<any, IState> {
     )
   }
 
-  public handleSnackClose = () => {
+  private handleSnackClose = () => {
     this.setState({ snackOpen: false })
   }
 
   private snackContent() {
     return (
       <div>
-        <span>We are constantly improving... Thanks!</span>
+        <span>We are continuously updating this resource, check back again soon.</span>
         <IconButton
           key='close'
           aria-label='Close'

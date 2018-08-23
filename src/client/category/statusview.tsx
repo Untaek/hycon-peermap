@@ -29,7 +29,7 @@ export class StatusView extends React.Component<IProps> {
           <Grid item>
             <Paper elevation={2} style={{ padding: 16 }}>
               <Typography variant='subheading' component='h3'>
-                Current difficulty <Typography color='textSecondary'>(Convert to Hexadecimal)</Typography>
+                Current difficulty <Typography color='textSecondary'>(Hex)</Typography>
               </Typography>
               <Typography variant='title' component='h1'>
                 {this.props.status.difficulty}
@@ -42,7 +42,7 @@ export class StatusView extends React.Component<IProps> {
           <Grid item>
             <Paper elevation={2} style={{ padding: 16 }}>
               <Typography variant='subheading' component='h3'>
-                Presumed hash power
+                Estimated hash power
             </Typography>
               <Typography variant='title' component='h1'>
                 {`${(1 / (this.props.status.difficulty * 30 / Math.LN2) / 1000).toFixed(2)} Khs`}

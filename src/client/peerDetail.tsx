@@ -17,7 +17,7 @@ export class PeerDetail extends React.Component<IProps> {
     return (
       <Grid style={{ padding: 8 }}>
         <Typography variant='title' component='h1' gutterBottom>Peers: {this.props.peerSize}</Typography>
-        <Typography variant='caption' component='p' color='textSecondary'>{`Peers were searched from ${this.agoString()} ago.`}</Typography>
+        {/* <Typography variant='caption' component='p' color='textSecondary'>{`Peers were searched from ${this.agoString()} ago.`}</Typography> */}
         {
           d ? <List dense disablePadding>
             {info('address', `${d.host}:${d.port}`)}

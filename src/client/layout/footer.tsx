@@ -17,7 +17,7 @@ export class Footer extends React.Component {
           <Grid container justify='center'>
             <EmailIcon style={{ color: '#dddddd', marginRight: 4 }} />
             <Typography align='center' variant='subheading' color='inherit' style={{ verticalAlign: 'middle' }}>
-              untaek@hycon.io</Typography>
+              contact@hycon.io</Typography>
           </Grid>
         </Grid >
       </Grid >
