@@ -17,7 +17,7 @@ export class PeerDetail extends React.Component<IProps> {
     return (
       <Grid style={{ padding: 8 }}>
         <Typography variant='title' component='h1' gutterBottom>Peers: {this.props.peerSize}</Typography>
-        <Typography variant='caption' component='p' color='textSecondary'>{`Peers were searched since ${this.props.startTime}`}</Typography>
+        <Typography variant='caption' component='p' color='textSecondary'>{`Peers were searched from ${this.agoString()} ago.`}</Typography>
         {
           d ? <List dense disablePadding>
             {info('address', `${d.host}:${d.port}`)}
@@ -33,11 +33,26 @@ export class PeerDetail extends React.Component<IProps> {
       </Grid>
     )
   }
+
+  private agoString() {
+    const ago = Math.round((Date.now() - this.props.startTime.getTime()) / 1000)
+    const sec = ago % 60
+    const min = Math.floor(ago / 60) % 60
+    const hour = Math.floor(ago / 60 / 60) % 24
+    const days = Math.floor(ago / 60 / 60 / 24)
+
+    return `
+      ${days ? `${days} days,` : ''}
+      ${hour ? `${hour} hours, ` : ''}
+      ${min ? `${min} mins, ` : ''}
+      ${`${sec} secs `}
+    `
+  }
 }
 
 const info = (category, value) => {
   return (
-    <ListItem disableGutters dense divider>
+    <ListItem disableGutters dense>
       <ListItemText primary={category} secondary={value} secondaryTypographyProps={{ color: 'secondary' }} />
     </ListItem>
   )

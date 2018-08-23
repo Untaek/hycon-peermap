@@ -1,18 +1,26 @@
 import { Grid, Typography } from '@material-ui/core'
 import { blue, lightBlue } from '@material-ui/core/colors'
+import EmailIcon from '@material-ui/icons/EmailOutlined'
 import * as React from 'react'
 
 export class Footer extends React.Component {
 
   public render() {
     return (
-      <Grid style={{ paddingTop: 80, paddingBottom: 120, backgroundColor: lightBlue['500'] }}>
-        <Typography align='center' gutterBottom variant='display1' >
-          <a href='https://hycon.io/'><img alt='hycon.io' src={'./hycon_white.png'} style={{ maxHeight: 64 }} /></a>
-        </Typography>
-        <Typography align='center' variant='subheading' color='inherit'>Developed by Untaek Lim</Typography>
-        <Typography align='center' variant='subheading' color='inherit'>untaek@hycon.io</Typography>
-      </Grid>
+      <Grid container direction='column' justify='center' style={{ padding: 100, backgroundColor: lightBlue['500'] }}>
+        <Grid item>
+          <Typography align='center' gutterBottom variant='display1' >
+            <a href='https://hycon.io/'><img alt='hycon.io' src={'./hycon_white.png'} style={{ maxHeight: 64 }} /></a>
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Grid container justify='center'>
+            <EmailIcon style={{ color: '#dddddd', marginRight: 4 }} />
+            <Typography align='center' variant='subheading' color='inherit' style={{ verticalAlign: 'middle' }}>
+              untaek@hycon.io</Typography>
+          </Grid>
+        </Grid >
+      </Grid >
     )
   }
 }

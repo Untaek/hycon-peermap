@@ -44,7 +44,6 @@ export class App extends React.Component<any, IState> {
       const startTime = new Date(detailsObject.startTime)
       const details = new Map<string, IPeerInfo>()
       for (const key in detailsObject.details) { if (key) { details.set(key, detailsObject.details[key]) } }
-
       this.setState({ details, status, startTime, isLoading: false })
     }
 
