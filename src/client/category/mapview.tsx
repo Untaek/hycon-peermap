@@ -281,7 +281,7 @@ export class MapView extends React.Component<IProps, IState> {
               this.state.network.focus(key, { animation: true })
             }}
           >
-            <Popup key={key}>{key + 1}</Popup>
+            <Popup key={key}>{key}</Popup>
           </Marker>,
         )
       }
@@ -290,24 +290,25 @@ export class MapView extends React.Component<IProps, IState> {
   }
 
   private createPolylines() {
-    const latlngs: any[] = []
-    if (this.state.details) {
-      const details = this.state.details
-      details.forEach((val) => {
-        if (val.location) {
-          latlngs.push([val.location.ll[0], val.location.ll[1]])
-          val.connected.forEach((peer) => {
-            const key = `${peer.host}:${peer.port}`
-            const to = details.get(key).location
-            if (to) {
-              latlngs.push([to.ll[0], to.ll[1]])
-            }
-          })
-        }
-      })
-    }
-
-    return <Polyline color='blue' weight={0.4} positions={latlngs} />
+    const lines = []
+    const details = this.state.details
+    details.forEach((val) => {
+      if (val.location) {
+        const from = val.location
+        val.connected.forEach((peer) => {
+          const key = `${peer.host}:${peer.port}`
+          const to = details.get(key).location
+          if (to) {
+            lines.push(<Polyline
+              color='blue'
+              weight={0.3}
+              positions={[[from.ll[0], from.ll[1]], [to.ll[0], to.ll[1]]]}
+            />)
+          }
+        })
+      }
+    })
+    return lines
   }
 
   private handleTabChange = (e, v) => {
